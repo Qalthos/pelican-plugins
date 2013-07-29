@@ -11,11 +11,11 @@ import types
 from pelican import signals
 
 def initialized(pelican):
-    from pelican.settings import _DEFAULT_CONFIG
-    _DEFAULT_CONFIG.setdefault('SUMMARY_BEGIN_MARKER',
-                               '<!-- PELICAN_BEGIN_SUMMARY -->')
-    _DEFAULT_CONFIG.setdefault('SUMMARY_END_MARKER',
-                               '<!-- PELICAN_END_SUMMARY -->')
+    from pelican.settings import DEFAULT_CONFIG
+    DEFAULT_CONFIG.setdefault('SUMMARY_BEGIN_MARKER',
+                              '<!-- PELICAN_BEGIN_SUMMARY -->')
+    DEFAULT_CONFIG.setdefault('SUMMARY_END_MARKER',
+                              '<!-- PELICAN_END_SUMMARY -->')
     if pelican:
         pelican.settings.setdefault('SUMMARY_BEGIN_MARKER',
                                     '<!-- PELICAN_BEGIN_SUMMARY -->')
@@ -54,7 +54,7 @@ def content_object_init(instance):
                             len(instance.settings['SUMMARY_BEGIN_MARKER'])
                             if begin_summary != -1 else 0)
             end_summary = end_summary if end_summary != -1 else None
-            instance._summary = content[begin_summary:end_summary]
+            instance._summary = instance._update_content(content[begin_summary:end_summary], instance._context.get('localsiteurl', ''))
 
 def register():
     signals.initialized.connect(initialized)
